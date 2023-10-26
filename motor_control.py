@@ -11,7 +11,11 @@ teensy_port = '/dev/ttyACM1'  # Teensy Serial port
 bt_port = '/dev/rfcomm0'    # HC-05 port
 bt_baud = 38400
 
-commands = ['f', 'b', 's', 'l', 'r']
+commands = {'forward'  : 'f',
+             'backward': 'b',
+             'left'    : 'l',
+             'right'   : 'r',
+             'stop'    : 's' }
 
 
 
