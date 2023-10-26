@@ -11,6 +11,19 @@ teensy_port = '/dev/ttyACM1'  # Teensy Serial port
 bt_port = '/dev/rfcomm0'    # HC-05 port
 bt_baud = 38400
 
+commands = ['f', 'b', 's', 'l', 'r']
+
+
+
+
+def send(command):
+    serbt = serial.Serial(bt_port, bt_baud)
+    print('Sending data...')
+    # Sleep for a second for a chance to connect
+    time.sleep(1)
+    serbt.write(command.encode('utf-8'))
+    print(command)
+    
 
 def fft_bin_to_motor():
     ''' Control servo motors via bluetooth based on FFT of signal
@@ -134,7 +147,7 @@ def main():
     global bt_baud, bt_port, teensy_port
     parser = argparse.ArgumentParser(description='EECS 452 Bluetooth Driver')
     parser.add_argument('function', metavar='function', type=str,
-                        choices=['bt_fft', 'latency', 'rate', 'size'],
+                        choices=['bt_fft', 'latency', 'rate', 'size', 'milestone1'],
                         help='The name of the function to run: "bt_fft", "latency", "rate", or "size"')
     parser.add_argument('-b', '--bt-baud', type=int, dest='bt_baud', default=bt_baud,
                         help='Baud Rate for HC-05 Module')
@@ -144,6 +157,7 @@ def main():
                         help='/dev/<port> for Teensy')
     parser.add_argument('-d', '--debug', action='store_true', default=False,
                         help='Print out serial port information for HC-05 and Teensy')
+    parser.add_argument('-c', '--command', type=str, dest='command', default='s')
     args = parser.parse_args()
 
     if args.bt_baud is not None:
@@ -152,7 +166,10 @@ def main():
         bt_port = args.bt_port
     if args.teensy_port is not None:
         teensy_port = args.teensy_port
-
+    if args.command is not None:
+        command = args.command
+        
+    
     if args.debug:
         print("Debug:")
         print("bt_baud: ", bt_baud)
@@ -168,6 +185,8 @@ def main():
         rate()
     elif args.function == 'size':
         size()
+    elif args.function == 'milestone1':
+        send(command)
 
 
 if __name__ == '__main__':

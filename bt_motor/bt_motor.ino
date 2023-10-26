@@ -15,6 +15,7 @@ bool L_increasing = true;
 bool R_increasing = true;
 
 int command;
+int movement;
 
 void setup (void)
 {
@@ -28,49 +29,45 @@ void setup (void)
 
   // attach to pins 9 and 10 (servo outputs)
   L_servo.attach(9);
-  R_servo.attach(10);
+  L_servo.write(90);
+
 }
 
 
-// main loop - oscillate L and R servos accordingly
 void loop (void){
   if (btSerial.available()) {
     command = btSerial.read();
+    Serial.println(char(command));
 
-    if (char(command) == 'L') {
-      if (L_increasing) {
-        L_pos++;
-      } else {
-        L_pos--;
-      }
-    Serial.print("left: ");  // Debug
-    Serial.println(L_pos);
-    } else if (char(command) == 'R') {
-      if (R_increasing) {
-        R_pos++;
-      } else {
-        R_pos--;
-      }
-    Serial.print("right: ");
-    Serial.println(R_pos);
+    //check obstacles
+    if (char(command) == 'r') {
+      Serial.println("command: right");
+      L_servo.write(0);
+      delay(1000);
     }
+    if (char(command) == 'l') {
+      Serial.println("command: left");
+      L_servo.write(180);
+      delay(1000);
+    }
+    if (char(command) == 'f') {
+      Serial.println("command: forward");
+    }
+    if (char(command) == 'b') {
+      Serial.println("command: backward");
+    }
+    if (char(command) == 's') {
+      Serial.println("command: stop");
+    }
+    //Serial.print("L position: ");
+    //Serial.println(L_pos);
   }
 
-  // Servos work by pulse width modulation,
-  // so continuously write their position
-  L_servo.write(L_pos);
-  R_servo.write(R_pos);
-  delay(10);
+  L_servo.write(90);
 
-  if (L_pos == 0) {
-    L_increasing = true;
-  } else if (L_pos == 180) {
-    L_increasing = false;
-  }
+  //move 
 
-  if (R_pos == 0) {
-    R_increasing = true;
-  } else if (R_pos == 180) {
-    R_increasing = false;
-  }
+  
+  delay(50);
+
 }  // end of loop
