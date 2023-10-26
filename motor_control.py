@@ -20,7 +20,7 @@ def send(command):
     serbt = serial.Serial(bt_port, bt_baud)
     print('Sending data...')
     # Sleep for a second for a chance to connect
-    time.sleep(1)
+    # time.sleep(1)
     serbt.write(command.encode('utf-8'))
     print(command)
     
@@ -187,6 +187,8 @@ def main():
         size()
     elif args.function == 'milestone1':
         send(command)
+        
+    print('the end of the code')
 
 
 if __name__ == '__main__':
