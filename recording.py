@@ -23,7 +23,7 @@ chunk = 4096 # 2^12 samples for buffer
 record_secs = 20 # seconds to record
 dev_index = 7 # device index found by p.get_device_info_by_index(ii)
 wav_output_filename = 'test1.wav' # name of .wav file
-down_sample = 4 # down sampling 
+down_sample = 1 # down sampling 
 
 threshold = 300
 
