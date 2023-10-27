@@ -11,17 +11,11 @@ teensy_port = '/dev/ttyACM1'  # Teensy Serial port
 bt_port = '/dev/rfcomm0'    # HC-05 port
 bt_baud = 38400
 
-commands = {'forward'  : 'f',
-             'backward': 'b',
-             'left'    : 'l',
-             'right'   : 'r',
-             'stop'    : 's' }
-
-
+serbt = serial.Serial(bt_port, bt_baud)
 
 
 def send(command):
-    serbt = serial.Serial(bt_port, bt_baud)
+    
     print('Sending data...')
     # Sleep for a second for a chance to connect
     # time.sleep(1)

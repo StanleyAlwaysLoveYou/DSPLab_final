@@ -39,7 +39,7 @@ void loop (void){
     command = btSerial.read();
     Serial.println(char(command));
 
-    //check obstacles
+    // --------------check obstacles--------------------
     if (char(command) == 'r') {
       Serial.println("command: right");
       L_servo.write(0);
@@ -65,7 +65,7 @@ void loop (void){
 
   L_servo.write(90);
 
-  //move 
+  // --------------move--------------------
 
   
   delay(50);

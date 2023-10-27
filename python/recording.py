@@ -5,6 +5,7 @@ import time
 import sounddevice
 import matplotlib.pyplot as plt
 import motor_control
+from voskrecognition import get_text
 
 #######################################
 #      parameter definition           #
@@ -12,14 +13,22 @@ import motor_control
 
 form_1 = pyaudio.paInt16 # 16-bit resolution
 chans = 1 # 1 channel
-samp_rate = 8000 # 44.1kHz sampling rate
-chunk = 4096 # 2^12 samples for buffer
-record_secs = 20 # seconds to record
+samp_rate = 16000 # 44.1kHz sampling rate
+chunk = 8192 # 2^12 samples for buffer
+record_secs = 300 # seconds to record
 dev_index = 7 # device index found by p.get_device_info_by_index(ii)
 wav_output_filename = 'test1.wav' # name of .wav file
 
 down_sample = 1 # down sampling 
 threshold = 300
+
+commands = {
+    'forward' : 'f',
+    'backward': 'b',
+    'left'    : 'l',
+    'right'   : 'r',
+    'stop'    : 's'
+}
 
 #######################################
 #      create pyaudio instantiation   #
@@ -69,18 +78,20 @@ for ii in range(0,int((samp_rate/chunk)*record_secs)):
         window = np.concatenate((previous_data, rawdata))
         
         ###### signal process ######
-        
 
+        command = get_text(previous_bytedata+data, samp_rate)
+        print('command recognition: {}'.format(command))
 
         
         ###### send command ######
-        motor_control.send('l')
+        motor_control.send(command)
         
         previous_power = -20000
         stream.start_stream()
         
         
     previous_data = rawdata
+    previous_bytedata = data
     
 
     
