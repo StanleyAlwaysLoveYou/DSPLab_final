@@ -37,7 +37,7 @@ void setup (void)
 void loop (void){
   if (btSerial.available()) {
     command = btSerial.read();
-    Serial.println(char(command));
+    //Serial.println(char(command));
 
     // --------------check obstacles--------------------
     if (char(command) == 'r') {
