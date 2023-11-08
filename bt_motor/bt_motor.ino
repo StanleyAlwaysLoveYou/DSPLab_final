@@ -8,6 +8,12 @@ SoftwareSerial btSerial(11, 12); // RX, TX
 Servo L_servo;
 Servo R_servo;
 
+Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+Adafruit_DCMotor *RFmotor = AFMS.getMotor(1);
+Adafruit_DCMotor *LFmotor = AFMS.getMotor(2);
+Adafruit_DCMotor *LBmotor = AFMS.getMotor(3);
+Adafruit_DCMotor *RBmotor = AFMS.getMotor(4);
+
 int L_pos = 0;    
 int R_pos = 0;
 
@@ -21,6 +27,10 @@ const int trigPin1 = 3;
 const int echoPin1 = 4;
 const int trigPin2 = 5;
 const int echoPin2 = 6;
+
+
+const int motorspeed = 100;
+const int spinspeed = 50;
 
 float duration, distance, tempdistance;
 
@@ -47,6 +57,22 @@ void setup (void)
   command = 's';
   movement = 's';
 
+  // Setup the motors
+  if (!AFMS.begin()) {
+    Serial.println("Could not find the motr shield");
+    while(1);
+  }
+  LFmotor -> setSpeed(motorspeed);
+  LFmotor -> run(RELEASE);
+  RFmotor -> setSpeed(motorspeed);
+  RFmotor -> run(RELEASE);
+  RBmotor -> setSpeed(motorspeed);
+  RBmotor -> run(RELEASE);
+  LBmotor -> setSpeed(motorspeed);
+  LBmotor -> run(RELEASE);
+
+  Serial.println("Complete setup!");
+
 }
 
 
@@ -54,6 +80,11 @@ void loop (void){
   if (btSerial.available()) {
     command = btSerial.read();
     //Serial.println(char(command));
+
+    LFmotor -> run(RELEASE);
+    RFmotor -> run(RELEASE);
+    LBmotor -> run(RELEASE);
+    RBmotor -> run(RELEASE);
 
     // --------------check obstacles--------------------
     if (char(command) == 'r') {
@@ -105,30 +136,63 @@ void loop (void){
   Serial.println(char(movement));
 
   if (char(movement) == 'r') {
+    delay(500);
+    LFmotor -> setSpeed(spinspeed);
+    LBmotor -> setSpeed(spinspeed);
+    LFmotor -> run(FORWARD);
+    LBmotor -> run(FORWARD);
+    delay(1000);
+    LFmotor -> run(RELEASE);
+    LBmotor -> run(RELEASE);
+    LFmotor -> setSpeed(motorspeed);
+    LBmotor -> setSpeed(motorspeed);
 
     movement = 's';
   }
   if (char(movement) == 'l') {
-
+    delay(500);
+    RFmotor -> setSpeed(spinspeed);
+    RBmotor -> setSpeed(spinspeed);
+    RFmotor -> run(FORWARD);
+    RBmotor -> run(FORWARD);
+    delay(1000);
+    RFmotor -> run(RELEASE);
+    RBmotor -> run(RELEASE);
+    RFmotor -> setSpeed(motorspeed);
+    RBmotor -> setSpeed(motorspeed);
+    
     movement = 's';
   }
   if (char(movement) == 'f') {
+    LFmotor -> run(FORWARD);
+    RFmotor -> run(FORWARD);
+    LBmotor -> run(FORWARD);
+    RBmotor -> run(FORWARD);
     
     distance = sonor_detect(trigPin1, echoPin1);
     if (distance < 10) movement = 's';
     else movement = 'f';
   }
   if (char(movement) == 'b') {
+    LFmotor -> run(BACKWARD);
+    RFmotor -> run(BACKWARD);
+    LBmotor -> run(BACKWARD);
+    RBmotor -> run(BACKWARD);
     
     distance = sonor_detect(trigPin2, echoPin2);
     if (distance < 10) movement = 's';
     else movement = 'b';
   }
   if (char(movement) == 's') {
+    LFmotor -> run(RELEASE);
+    RFmotor -> run(RELEASE);
+    LBmotor -> run(RELEASE);
+    RBmotor -> run(RELEASE);
+    
     movement = 's';
   }
-  
-  delay(1000);
+
+  delay(500);
 
 }  // end of loop
 
