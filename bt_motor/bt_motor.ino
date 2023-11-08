@@ -9,16 +9,12 @@ Servo L_servo;
 Servo R_servo;
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *RFmotor = AFMS.getMotor(1);
+Adafruit_DCMotor *LBmotor = AFMS.getMotor(1);
 Adafruit_DCMotor *LFmotor = AFMS.getMotor(2);
-Adafruit_DCMotor *LBmotor = AFMS.getMotor(3);
+Adafruit_DCMotor *RFmotor = AFMS.getMotor(3);
 Adafruit_DCMotor *RBmotor = AFMS.getMotor(4);
 
 int L_pos = 0;    
-int R_pos = 0;
-
-bool L_increasing = true;
-bool R_increasing = true;
 
 int command;
 int movement;
@@ -29,8 +25,13 @@ const int trigPin2 = 5;
 const int echoPin2 = 6;
 
 
-const int motorspeed = 100;
-const int spinspeed = 50;
+const int motorspeed = 80;
+const int spinspeed = 200;
+
+const int spin_duration = 2000;
+
+const int threshold = 25;
+const int spin_threshold = 50;
 
 float duration, distance, tempdistance;
 
@@ -89,34 +90,46 @@ void loop (void){
     // --------------check obstacles--------------------
     if (char(command) == 'r') {
       Serial.println("command: right");
-      L_servo.write(0);
-      delay(1000);
-      
+
       distance = sonor_detect(trigPin1, echoPin1);
-      if (distance < 10) movement = 's';
-      else movement = 'r';
+      if (distance < threshold) movement = 's';
+      else {
+        L_servo.write(0);
+        delay(1000);
+      
+        distance = sonor_detect(trigPin1, echoPin1);
+        if (distance < spin_threshold) movement = 's';
+        else movement = 'r';
+      }
+      
     }
     if (char(command) == 'l') {
       Serial.println("command: left");
-      L_servo.write(180);
-      delay(1000);
-      
+
       distance = sonor_detect(trigPin1, echoPin1);
-      if (distance < 10) movement = 's';
-      else movement = 'l';
+      if (distance < threshold) movement = 's';
+      else {
+        L_servo.write(180);
+        delay(1000);
+      
+        distance = sonor_detect(trigPin1, echoPin1);
+        if (distance < spin_threshold) movement = 's';
+        else movement = 'l';
+      }
+      
     }
     if (char(command) == 'f') {
       Serial.println("command: forward");
       
       distance = sonor_detect(trigPin1, echoPin1);
-      if (distance < 10) movement = 's';
+      if (distance < threshold) movement = 's';
       else movement = 'f';
     }
     if (char(command) == 'b') {
       Serial.println("command: backward");
 
       distance = sonor_detect(trigPin2, echoPin2);
-      if (distance < 10) movement = 's';
+      if (distance < threshold) movement = 's';
       else movement = 'b';
     }
     if (char(command) == 's') {
@@ -139,25 +152,41 @@ void loop (void){
     delay(500);
     LFmotor -> setSpeed(spinspeed);
     LBmotor -> setSpeed(spinspeed);
+    RFmotor -> setSpeed(spinspeed);
+    RBmotor -> setSpeed(spinspeed);
     LFmotor -> run(FORWARD);
     LBmotor -> run(FORWARD);
-    delay(1000);
+    RFmotor -> run(BACKWARD);
+    RBmotor -> run(BACKWARD);
+    delay(spin_duration);
     LFmotor -> run(RELEASE);
     LBmotor -> run(RELEASE);
+    RFmotor -> run(RELEASE);
+    RBmotor -> run(RELEASE);
     LFmotor -> setSpeed(motorspeed);
     LBmotor -> setSpeed(motorspeed);
+    RFmotor -> setSpeed(motorspeed);
+    RBmotor -> setSpeed(motorspeed);
 
     movement = 's';
   }
   if (char(movement) == 'l') {
     delay(500);
+    LFmotor -> setSpeed(spinspeed);
+    LBmotor -> setSpeed(spinspeed);
     RFmotor -> setSpeed(spinspeed);
     RBmotor -> setSpeed(spinspeed);
+    LFmotor -> run(BACKWARD);
+    LBmotor -> run(BACKWARD);
     RFmotor -> run(FORWARD);
     RBmotor -> run(FORWARD);
-    delay(1000);
+    delay(spin_duration);
+    LFmotor -> run(RELEASE);
+    LBmotor -> run(RELEASE);
     RFmotor -> run(RELEASE);
     RBmotor -> run(RELEASE);
+    LFmotor -> setSpeed(motorspeed);
+    LBmotor -> setSpeed(motorspeed);
     RFmotor -> setSpeed(motorspeed);
     RBmotor -> setSpeed(motorspeed);
     
@@ -170,7 +199,7 @@ void loop (void){
     RBmotor -> run(FORWARD);
     
     distance = sonor_detect(trigPin1, echoPin1);
-    if (distance < 10) movement = 's';
+    if (distance < threshold) movement = 's';
     else movement = 'f';
   }
   if (char(movement) == 'b') {
@@ -180,7 +209,7 @@ void loop (void){
     RBmotor -> run(BACKWARD);
     
     distance = sonor_detect(trigPin2, echoPin2);
-    if (distance < 10) movement = 's';
+    if (distance < threshold) movement = 's';
     else movement = 'b';
   }
   if (char(movement) == 's') {
@@ -192,7 +221,7 @@ void loop (void){
     movement = 's';
   }
 
-  delay(500);
+  delay(200);
 
 }  // end of loop
 
