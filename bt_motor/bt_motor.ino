@@ -24,11 +24,11 @@ const int echoPin1 = 4;
 const int trigPin2 = 5;
 const int echoPin2 = 6;
 
-
+ /*********** parameters **********/
 const int motorspeed = 80;
 const int spinspeed = 200;
 
-const int spin_duration = 2000;
+const int spin_duration = 800;
 
 const int threshold = 25;
 const int spin_threshold = 50;
@@ -92,7 +92,7 @@ void loop (void){
       Serial.println("command: right");
 
       distance = sonor_detect(trigPin1, echoPin1);
-      if (distance < threshold) movement = 's';
+      if (distance < threshold-5) movement = 's';
       else {
         L_servo.write(0);
         delay(1000);
@@ -107,7 +107,7 @@ void loop (void){
       Serial.println("command: left");
 
       distance = sonor_detect(trigPin1, echoPin1);
-      if (distance < threshold) movement = 's';
+      if (distance < threshold-5) movement = 's';
       else {
         L_servo.write(180);
         delay(1000);
