@@ -7,4 +7,4 @@ for i in range(20):
     print('start {} times'.format(i))
     myrecording = sounddevice.rec(int(seconds * fs), samplerate=fs, channels = 1)
     sounddevice.wait()  # Wait until recording is finished
-    write(f'right/testing{i:d}.wav', fs, myrecording)
+    write(f'stanleylin/right/testing{i:d}.wav', fs, myrecording)

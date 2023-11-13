@@ -10,17 +10,17 @@ import os
 import glob
 from trainer import HMMTrainer
 import pickle
-path1 = "backward/"
-path2 = "forward/"
-path3 = "left/"
-path4 = "right/"
-path5 = "stop/"
+path1 = "chiahung/backward/"
+path2 = "chiahung/forward/"
+path3 = "chiahung/left/"
+path4 = "chiahung/right/"
+path5 = "chiahung/stop/"
 command = ['backward', 'forward', 'left', 'right', 'stop']
 pathes = [path1, path2, path3, path4, path5]
-
+hmm_models = []
 
 for i in range(0, len(command)): 
-    with open(f"thebest/hmm{i:d}.pkl", "rb") as file: 
+    with open(f"hmm{i:d}.pkl", "rb") as file: 
         hmm_trainer = pickle.load(file)
         hmm_models.append((hmm_trainer, i))
         
