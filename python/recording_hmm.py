@@ -5,7 +5,7 @@ import time
 import sounddevice
 import matplotlib.pyplot as plt
 import motor_control
-from voskrecognition import get_text
+# from voskrecognition import get_text
 
 from python_speech_features import mfcc
 from hmmlearn import hmm
